@@ -1,16 +1,33 @@
 package ru.richi106.Robot;
 
-/**
- * Hello world!
- *
- */
 public class App {
-	public static void main(String[] args) {
 
-		Robot robot = new Robot(-1, -1, Direction.DOWN);
+    public static void main(String[] args) {
 
-		System.out.println("X: " + robot.getX() + "; Y: " + robot.getY()
-				+ "; Direction: " + robot.getDirection());
-	}
+        RobotConnectionManager robotConnectionManager = new RobotConnectionManagerImpl(null);
+        moveRobot(robotConnectionManager, 1, 1);
+
+    }
+
+    public static void moveRobot(RobotConnectionManager robotConnectionManager, int toX, int toY) {
+        // your implementation here
+        boolean success = false;
+        for (int i = 0; i < 3; i++) {
+            if (!success) {
+                try (RobotConnection connect = robotConnectionManager.getConnection()) {
+                    connect.moveRobotTo(toX, toY);
+                    success = true;
+                } catch (RobotConnectionException e) {
+                    if (i == 2) {
+                        throw e;
+                    }
+                } catch (Exception t) {
+                    throw t;
+                }
+            } else {
+                return;
+            }
+        }
+    }
 
 }
